@@ -1,0 +1,54 @@
+import pandas as pd
+import numpy as np
+import requests
+import csv
+from datetime import datetime
+from dash import Dash
+from dash_html_components import H1
+players=pd.read_csv('players.csv')
+players.head(50)
+"""#tirar o bloco inteiro depois de verificar 
+with open("historico.csv", "w") as f:
+    c = csv.writer(f)
+    c.writerow(['ID_STEAM','ID_MATCH','DATA','RESULTADO','WIN','LOSS','KILL','ASSIST','DEATH'])"""
+match_data_df = pd.read_csv('historico.csv',sep=';')
+match_data_df.head()
+def atualizar_tabela_rank(rank_df, id_steam, id_match, data, resultado, win, loss, kill, assist, death):
+    rank_df.loc[-1] = [id_steam, id_match, data,resultado,win,loss,kill,assist,death] 
+    rank_df = rank_df.reset_index(drop = True)
+
+    return rank_df
+vitoria = 0
+derrota = 0
+for player in list(players['ID_STEAM']):
+    player_df = match_data_df[match_data_df['ID_STEAM'] == player]
+    r = requests.get(f'https://api.opendota.com/api/players/{player}/matches?limit=30&game_mode=22')
+    partidas = r.json()
+    for partida in partidas:
+        if len(player_df[player_df['ID_MATCH']== partida['match_id']]):
+            print(f'ultima partida encontrada {player}, parando atualização')
+            break
+        is_radiant = True if partida['player_slot'] <= 128  else False
+        resultado = 'Win' if is_radiant == partida['radiant_win'] else 'Loss'
+        if resultado == 'Win':
+            vitoria = 1 
+            derrota = 0
+        else:
+            derrota = 1 
+            vitoria = 0
+        match_data_df = atualizar_tabela_rank(match_data_df,
+                             player,
+                             partida['match_id'],
+                             datetime.fromtimestamp(partida['start_time']).strftime('%Y/%m/%d'),
+                             resultado,
+                             vitoria,
+                             derrota,
+                             partida['kills'],
+                             partida['assists'],
+                             partida['deaths']
+                              
+                             )
+wl= pd.merge(players, md, how = 'outer')
+wl.to_csv('historico.csv', sep =';', index = False)
+md= match_data_df
+md
