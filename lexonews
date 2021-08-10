@@ -2,7 +2,7 @@ from time import sleep
 import random
 import requests
 import json
-r = requests.get('https://newsapi.org/v2/top-headlines?sources=google-news-br&apiKey=d9814d6fdc5d40a3bb17c14112bfb933')
+r = requests.get('https://newsapi.org/v2/top-headlines?sources=google-news-br&apiKey=APIKEY')
 data = r.json()
 data.keys()
 artigos = data['articles']
@@ -16,7 +16,7 @@ for art in lista_art:
             "author": {
                 "name": "Lexo news",
                 "url": 'https://Lexonews.com',
-                "icon_url": "https://static-cdn.jtvnw.net/jtv_user_pictures/dc484480-cfc7-4659-8a22-85597d544177-profile_image-300x300.png",
+                "icon_url": "URLIMAGE",
             },
             "title": art["titulo"],
             "url": art["link"],
@@ -33,14 +33,14 @@ for embed_disc in embeds_disc:
     if c == 0:
         modelo = {"content":"NOTÍCIAS DO LEXO","embeds": [embed_disc]}
         modelo = json.dumps(modelo)
-        url_bot_discord = 'https://discord.com/api/webhooks/829912138305765387/L643hULEa4TntlPLy89NlPA3F4VdtyswWayzDpvMwEkPwTbW15i-95ubwAGbIQlNVEAC'
+        url_bot_discord = 'URLBOT'
         send = requests.post(url_bot_discord, headers=header, data=modelo)
         c+=1
         sleep = 2
     else:
         modelo = {"content": "","embeds": [embed_disc]}
         modelo = json.dumps(modelo)
-        url_bot_discord = 'https://discord.com/api/webhooks/829912138305765387/L643hULEa4TntlPLy89NlPA3F4VdtyswWayzDpvMwEkPwTbW15i-95ubwAGbIQlNVEAC'
+        url_bot_discord = 'URLBOT'
         send = requests.post(url_bot_discord, headers=header, data=modelo)
         print(send.text)
         sleep = 2
