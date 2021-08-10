@@ -1,0 +1,101 @@
+
+
+
+
+
+# In[4]:
+
+
+# 1. - Ler a última data gravada
+# 2. - Acessar o site dos relatórios
+# 3. - Ler a data mais atual no site
+# 4. - Comparar as datas
+# 5. - Enviar uma mensagem no discord caso as datas sejam diferentes
+
+
+# In[5]:
+
+
+
+
+
+# In[12]:
+
+
+
+# In[15]:
+
+
+
+
+# In[20]:
+
+
+# 1. - Ler a última data gravada
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
+import json
+#from discordwebhook import Discord
+def ler_data_ultimo_relatorio(nome_do_arquivo):
+    # Lê o arquivo com a última data gravada
+    with open(nome_do_arquivo, 'r') as arquivo:
+        old_date = arquivo.read()
+    return old_date
+    def obter_dados_conab(url_conab):
+    page = requests.get(url_conab)
+    soup = BeautifulSoup(page.text,'html.parser')
+    return soup
+
+def buscar_ultima_data_site(soup):
+    divisao = soup.find_all("div", class_="tileInfo span2")
+    site_date = divisao[0].find('li').text
+    divisao2 = soup.find_all("div", class_="catItemAttachmentsBlock pull-left")
+    download = divisao2[0].find('a').get('href')
+    return site_date
+try:
+    old_date = ler_data_ultimo_relatorio('arquivo.txt')
+except:
+    print('Arquivo com a última data não encotrado!')
+    old_date = ''
+    with open('arquivo.txt', 'w') as f:
+        f.write('')
+
+
+    
+#old_date
+
+
+# In[9]:
+
+
+# 2. - Acessar o site dos relatórios
+
+
+# In[14]:
+
+
+# Busca a data atual no site
+
+
+# In[17]:
+
+
+site_date = buscar_ultima_data_site(soup)
+site_date
+
+
+# In[6]:
+
+
+# Lê o arquivo com a última data gravada
+arquivo = open('sato.txt', 'r')
+old_date = arquivo.read()
+old_date
+
+
+# In[ ]:
+
+
+
+
